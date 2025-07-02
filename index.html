@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prelim Digest - 1499 Kiner Avenue</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.5;
+            padding: 5px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: #2c3e50;
+            color: white;
+            padding: 8px;
+            text-align: center;
+            font-size: 18px;
+        }
+        
+        .header-title {
+            font-weight: 600;
+        }
+        
+        .header-subtitle {
+            font-weight: normal;
+        }
+        
+        .status-grid {
+            display: grid;
+            grid-template-columns: 1fr 3fr 1fr;
+            border-bottom: 2px solid #ddd;
+        }
+        
+        .status-cell {
+            padding: 5px;
+            border-right: 1px solid #ddd;
+            background: #f8f9fa;
+            font-weight: 600;
+            text-align: center;
+            font-size: 13px;
+            text-transform: uppercase;
+            color: #666;
+        }
+        
+        .status-cell:last-child {
+            border-right: none;
+        }
+        
+        .status-value {
+            padding: 6px;
+            border-right: 1px solid #ddd;
+            border-bottom: 1px solid #ddd;
+            background: white;
+            font-size: 14px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .status-value:nth-child(2) {
+            text-align: left;
+            justify-content: flex-start;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .status-value:last-child {
+            border-right: none;
+        }
+        
+        .status-value.status-summary {
+            font-weight: 600;
+            background-color: #fff3cd;
+        }
+        
+        .status-counts {
+            text-align: left;
+            line-height: 1.3;
+        }
+        
+        .deal-killer-count { color: #dc3545; }
+        .needs-attention-count { color: #856404; }
+        .missing-info-count { color: #6c757d; }
+        .okay-count { color: #28a745; font-weight: bold; }
+        
+        .action-item {
+            margin: 2px 0;
+            font-size: 13px;
+        }
+        
+        .action-deadline {
+            font-size: 12px;
+            color: #666;
+            font-style: italic;
+        }
+        
+        .summary-section {
+            grid-column: 1 / -1;
+            padding: 10px;
+            background: #f8f9fa;
+            border-bottom: 2px solid #ddd;
+        }
+        
+        .summary-header {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .summary-content {
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        
+        .summary-content ul {
+            margin: 5px 0 0 20px;
+            padding: 0;
+        }
+        
+        .summary-content li {
+            margin: 2px 0;
+        }
+        
+        .content {
+            padding: 0;
+        }
+        
+        .category-header {
+            background: #e9ecef;
+            padding: 8px 15px;
+            font-weight: 600;
+            font-size: 16px;
+            color: #2c3e50;
+            border-bottom: 1px solid #ddd;
+            border-top: 2px solid #ddd;
+        }
+        
+        .section {
+            border-bottom: 1px solid #e9ecef;
+            background: white;
+            transition: background-color 0.2s ease;
+        }
+        
+        .section:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .section-header {
+            padding: 8px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            user-select: none;
+        }
+        
+        .section-title {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            line-height: 1.4;
+        }
+
+        .summary-text {
+            font-weight: normal;
+            color: #666;
+            font-size: 14px;
+            margin-left: 6px;
+        }
+        
+        .status-icon {
+            font-size: 16px;
+            margin-right: 8px;
+        }
+        
+        .expand-icon {
+            color: #999;
+            font-size: 16px;
+            transition: transform 0.3s ease;
+            margin-left: 20px;
+            flex-shrink: 0;
+        }
+        
+        .section.expanded .expand-icon {
+            transform: rotate(180deg);
+        }
+        
+        .section-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            background: #f8f9fa;
+        }
+        
+        .section.expanded .section-content {
+            max-height: 800px;
+            transition: max-height 0.5s ease-in;
+        }
+        
+        .section-details {
+            padding: 0 15px 8px 35px;
+        }
+        
+        .detail-item {
+            margin: 4px 0;
+            padding-left: 0;
+            position: relative;
+            font-size: 14px;
+            line-height: 1.4;
+            color: #555;
+        }
+        
+        .detail-item:before {
+            display: none;
+        }
+        
+        .red-flag {
+            color: #dc3545;
+            font-weight: 600;
+        }
+        
+        .warning {
+            color: #ffc107;
+            font-weight: 600;
+        }
+        
+        .legend {
+            padding: 15px;
+            background: #f8f9fa;
+            border-top: 2px solid #dee2e6;
+        }
+        
+        .legend-title {
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+        
+        .legend-item {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .legend-icon {
+            font-weight: 600;
+            margin-right: 5px;
+        }
+        
+        @media (max-width: 768px) {
+            .status-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .status-cell:nth-child(2),
+            .status-value:nth-child(2) {
+                grid-column: span 2;
+            }
+            
+            .section-header {
+                padding: 15px;
+            }
+            
+            .section-details {
+                padding-left: 35px;
+            }
+            
+            .legend-item {
+                display: block;
+                margin: 5px 0;
+            }
+        }
+        
+        @media print {
+            body {
+                background: white;
+            }
+            
+            .container {
+                box-shadow: none;
+            }
+            
+            .section {
+                break-inside: avoid;
+            }
+            
+            .section.expanded .section-content {
+                max-height: none !important;
+            }
+            
+            .expand-icon {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span class="header-title">❏ PRELIM DIGEST — 1499 Kiner Avenue, San Jose, CA</span>
+            <span class="header-subtitle">(Escrow #1115041053-CT)</span>
+        </div>
+        
+        <div class="status-grid">
+            <div class="status-cell">STATUS</div>
+            <div class="status-cell">NEXT ACTION / DEADLINE</div>
+            <div class="status-cell">PREPARED ON</div>
+        </div>
+        
+        <div class="status-grid">
+            <div class="status-value status-summary">
+                <div class="status-counts">
+                    <div class="deal-killer-count">🛑 0 deal killers</div>
+                    <div class="needs-attention-count">⚠️ 14 need attention</div>
+                    <div class="missing-info-count">❓ 3 missing information</div>
+                    <div class="okay-count">✅ 4 okay</div>
+                </div>
+            </div>
+            <div class="status-value">
+                <div class="action-item">1. Settle tax bill. <span class="action-deadline">Prior to Closing.</span></div>
+                <div class="action-item">2. Address Tesla lien. <span class="action-deadline">Prior to Closing.</span></div>
+                <div class="action-item">3. Obtain Certificate of Trust. <span class="action-deadline">Prior to Closing.</span></div>
+            </div>
+            <div class="status-value">02-Jul 2025</div>
+        </div>
+        
+        <div class="summary-section">
+            <div class="summary-header">SUMMARY:</div>
+            <div class="summary-content">
+                Several <strong>non-standard impediments to the transaction closing</strong> were identified:
+                <ul>
+                    <li>The unpaid property tax bill of over $20,000 must be settled.</li>
+                    <li>The Tesla solar system contract and lien must be formally assumed or terminated.</li>
+                    <li>The sellers must also provide required trust documentation</li>
+                    <li>All underground water rights are permanently excepted from the title</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="content">
+            <div class="category-header">Ownership & Vesting</div>
+            
+            <div class="section" onclick="toggleSection(this)">
+                <div class="section-header">
+                    <div class="section-title"><span class="status-icon">✅</span> Record Owner(s):<span class="summary-text">Peng Zheng and Minmin Hou, as co-Trustees of The Zheng and Hou Family Living Trust</span></div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="section-details">
+                        <div class="detail-item">The current owners hold title as Trustees of The Zheng and Hou Family Living Trust, dated August 29, 2022.</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section" onclick="toggleSection(this)">
+                <div class="section-header">
+                    <div class="section-title"><span class="status-icon">⚠️</span> Vesting Method:<span class="summary-text">The property is held in a family trust dated 8/29/2022</span></div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="section-details">
+                        <div class="detail-item">Property vested in The Zheng and Hou Family Living Trust as of August 29, 2022.</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section" onclick="toggleSection(this)">
+                <div class="section-header">
+                    <div class="section-title"><span class="status-icon">❓</span> Vesting Matches Contract?:<span class="summary-text">Contract Not Provided</span></div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="section-details">
+                        <div class="detail-item">A purchase contract was not provided for comparison.</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="category-header">Property Description</div>
+            
+            <div class="section" onclick="toggleSection(this)">
+                <div class="section-header">
+                    <div class="section-title"><span class="status-icon">✅</span> Full Legal Description:<span class="summary-text">Lot 49 of "Tract No. 2567 Willomont Unit No. 2", excepting underground water rights</span></div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="section-details">
+                        <div class="detail-item">Complete legal description as recorded in county records.</div>
+                        <div class="detail-item">Underground water rights are specifically excepted from this conveyance.</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section" onclick="toggleSection(this)">
+                <div class="section-header">
+                    <div class="section-title"><span class="status-icon">❓</span> APN Matches Contract?:<span class="summary-text">Contract Not Provided</span></div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="section-details">
+                        <div class="detail-item">The prelim lists APN 439-40-129, but a contract was not provided for comparison.</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section" onclick="toggleSection(this)">
+                <div class="section-header">
+                    <div class="section-title"><span class="status-icon">❓</span> Acreage / Boundary Discrepancy:<span class="summary-text">Not provided</span></div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="section-details">
+                        <div class="detail-item">Acreage is not stated in the provided documents.</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="category-header">Title History</div>
+            
+            <div class="section" onclick="toggleSection(this)">
+                <div class="section-header">
+                    <div class="section-title"><span class="status-icon">⚠️</span> Chain of Title Gaps > 24mo:<span class="summary-text">Yes. The last recorded transfer was just over 24 months ago</span></div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="section-details">
+                        <div class="detail-item">The last transfer was on August 29, 2022. The report date of September 27, 2024, puts this slightly over the standard 24-month lookback period.</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section" onclick="toggleSection(this)">
+                <div class="section-header">
+                    <div class="section-title"><span class="status-icon">⚠️</span> Unrecorded Deeds / Probate:<span class="summary-text">No probate issues noted, but trust Certification of Trust is required</span></div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="section-details">
+                        <div class="detail-item">The property is held in a trust, and the title company requires a Certification of Trust to prove the sellers have authority to convey title.</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section" onclick="toggleSection(this)">
+                <div class="section-header">
+                    <div class="section-title"><span class="status-icon">✅</span> Lis Pendens / Bankruptcy:<span class="summary-text">None noted in the provided documents</span></div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="section-details">
+                        <div class="detail-item">No pending litigation or bankruptcy proceedings identified.</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="category-header">Loans & Liens</div>
+            
+            <div class="section" onclick="toggleSection(this)">
+                <div class="section-header">
+                    <div class="section-title"><span class="status-icon">⚠️</span> Open Mortgages/Deeds of Trust:<span class="summary-text">One open Deed of Trust was found</span></div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="section-details">
+                        <div class="detail-item">Active deed of trust must be addressed at closing.</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section" onclick="toggleSection(this)">
+                <div class="section-header">
+                    <div class="section-title"><span class="status-icon">✅</span> Missing Reconveyances:<span class="summary-text">None noted in the provided documents</span></div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="section-details">
+                        <div class="detail-item">No missing reconveyances identified in title search.</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section" onclick="toggleSection(this)">
+                <div class="section-header">
+                    <div class="section-title"><span class="status-icon">⚠️</span> Involuntary Liens:<span class="summary-text">Two items are recorded: a CFD assessment and a UCC Financing Statement for a solar system</span></div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="section-details">
+                        <div class="detail-item">1. The property is within Community Facilities District No. 2014-1 for Clean Energy.</div>
+                        <div class="detail-item">2. A UCC Financing Statement for Tesla Inc. was recorded on June 14, 2022.</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section" onclick="toggleSection(this)">
+                <div class="section-header">
+                    <div class="section-title"><span class="status-icon">⚠️</span> Details for Open Lien(s):<span class="summary-text">A Deed of Trust for $1,300,500.00 was recorded on October 15, 2020</span></div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="section-details">
+                        <div class="detail-item">This lien must be paid off and reconveyed at closing.</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="category-header">Taxes & Assessments</div>
+            
+            <div class="section" onclick="toggleSection(this)">
+                <div class="section-header">
+                    <div class="section-title"><span class="status-icon">⚠️</span> Delinquent Property Taxes:<span class="summary-text">Yes. Both installments for the 2024-2025 fiscal year are due</span></div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="section-details">
+                        <div class="detail-item">The 1st and 2nd installments, totaling $20,478.80, are currently due and not marked as paid.</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section" onclick="toggleSection(this)">
+                <div class="section-header">
+                    <div class="section-title"><span class="status-icon">⚠️</span> Special Assessments:<span class="summary-text">The property is within a Community Facilities District for Clean Energy</span></div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="section-details">
+                        <div class="detail-item">Community Facilities District No. 2014-1 assessment applies to this property.</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section" onclick="toggleSection(this)">
+                <div class="section-header">
+                    <div class="section-title"><span class="status-icon">⚠️</span> Next Tax Installment Due:<span class="summary-text">The 1st installment of $10,239.40 is due</span></div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="section-details">
+                        <div class="detail-item">First installment payment deadline approaching.</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="category-header">Restrictions & Easements</div>
+            
+            <div class="section" onclick="toggleSection(this)">
+                <div class="section-header">
+                    <div class="section-title"><span class="status-icon">✅</span> Easements & Impact:<span class="summary-text">The title is subject to minor public service and wire clearance easements</span></div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="section-details">
+                        <div class="detail-item">The property has a 5-foot Public Service Easement and a 5-foot Wire Clearance Easement.</div>
+                        <div class="detail-item">No blanket easement listed for this property.</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section" onclick="toggleSection(this)">
+                <div class="section-header">
+                    <div class="section-title"><span class="status-icon">⚠️</span> CC&Rs / Key Use Restrictions:<span class="summary-text">The property is subject to Covenants, Conditions, and Restrictions recorded in 1959</span></div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="section-details">
+                        <div class="detail-item">The specific rules of the CC&Rs are not detailed in the report and require review of the original document.</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section" onclick="toggleSection(this)">
+                <div class="section-header">
+                    <div class="section-title"><span class="status-icon">⚠️</span> Access or Boundary Issues:<span class="summary-text">A 25-foot building set-back line is noted from Kiner Avenue</span></div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="section-details">
+                        <div class="detail-item">Building setback requirement must be observed for any construction.</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section" onclick="toggleSection(this)">
+                <div class="section-header">
+                    <div class="section-title"><span class="status-icon">⚠️</span> Reserved or Severed Rights:<span class="summary-text">Yes. All underground water rights are severed from the title</span></div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="section-details">
+                        <div class="detail-item">The underground water rights were granted to San Jose Water Works and are permanently excepted from the property's title.</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="category-header">Title Policy & Closing Requirements</div>
+            
+            <div class="section" onclick="toggleSection(this)">
+                <div class="section-header">
+                    <div class="section-title"><span class="status-icon">⚠️</span> FinCEN Compliance:<span class="summary-text">This transaction may require federal compliance to avoid being stopped by the title company</span></div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="section-details">
+                        <div class="detail-item">The closing may be subject to a Geographic Targeting Order (GTO) from the U.S. Treasury's Financial Crimes Enforcement Network (FinCEN).</div>
+                        <div class="detail-item">Failure or refusal by any party to provide the required information will prevent Old Republic from closing the transaction or issuing title insurance.</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section" onclick="toggleSection(this)">
+                <div class="section-header">
+                    <div class="section-title"><span class="status-icon">⚠️</span> Standard vs Special Exceptions:<span class="summary-text">The report contains multiple special exceptions</span></div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="section-content">
+                    <div class="section-details">
+                        <div class="detail-item">Special exceptions include:</div>
+                        <div class="detail-item" style="padding-left: 20px;">• unpaid taxes</div>
+                        <div class="detail-item" style="padding-left: 20px;">• trust requirements</div>
+                        <div class="detail-item" style="padding-left: 20px;">• solar contract/lien</div>
+                        <div class="detail-item" style="padding-left: 20px;">• severed water rights</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="legend">
+            <div class="legend-title">Icon Legend</div>
+            <div class="legend-item">
+                <span class="legend-icon">✅</span> <strong>Okay:</strong> Standard information, no issues noted.
+            </div>
+            <div class="legend-item">
+                <span class="legend-icon">⚠️</span> <strong>Needs Attention:</strong> An impediment to close that requires action or acknowledgment.
+            </div>
+            <div class="legend-item">
+                <span class="legend-icon">🛑</span> <strong>Deal-Killer:</strong> A serious issue that may cause a buyer to reconsider the purchase.
+            </div>
+            <div class="legend-item">
+                <span class="legend-icon">❓</span> <strong>Missing Info:</strong> Information required for a full review was not provided.
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function toggleSection(section) {
+            section.classList.toggle('expanded');
+            
+            // Get the content div
+            const content = section.querySelector('.section-content');
+            
+            // Toggle max-height for smooth animation
+            if (section.classList.contains('expanded')) {
+                // Calculate the actual height needed
+                const scrollHeight = content.scrollHeight;
+                content.style.maxHeight = scrollHeight + 'px';
+            } else {
+                content.style.maxHeight = '0';
+            }
+        }
+        
+        // Auto-expand all sections for printing
+        window.addEventListener('beforeprint', () => {
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.add('expanded');
+                const content = section.querySelector('.section-content');
+                content.style.maxHeight = content.scrollHeight + 'px';
+            });
+        });
+    </script>
+</body>
+</html>
