@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="robots" content="noindex, nofollow">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Prelim Digest - 1499 Kiner Avenue</title>
     <style>
@@ -16,7 +17,7 @@
             background-color: #f5f5f5;
             color: #333;
             line-height: 1.5;
-            padding: 20px;
+            padding: 5px;
         }
         
         .container {
@@ -25,6 +26,7 @@
             background: white;
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
         }
         
         .header {
@@ -33,8 +35,6 @@
             padding: 8px;
             text-align: center;
             font-size: 18px;
-            border-top-left-radius: 8px;
-            border-top-right-radius: 8px;
         }
         
         .header-title {
@@ -44,66 +44,59 @@
         .header-subtitle {
             font-weight: normal;
         }
-
-        /* New Status Table Styles */
-        .status-table {
+        
+        .status-grid {
             display: grid;
-            grid-template-columns: 1.5fr 3fr 1fr;
+            grid-template-columns: 1fr 3fr 1fr;
             border-bottom: 2px solid #ddd;
         }
-        .new-status-grid {
-            display: grid;
-            grid-template-columns: 28fr 47fr 25fr;
-            border-bottom: 2px solid #ddd;
-            line-height: 1.4;
-        }
-        .status-table-header {
-            padding: 12px 8px;
+        
+        .status-cell {
+            padding: 5px;
             border-right: 1px solid #ddd;
-            background: #e9ecef;
+            background: #f8f9fa;
             font-weight: 600;
             text-align: center;
             font-size: 13px;
-            color: #333;
+            text-transform: uppercase;
+            color: #666;
+        }
+        
+        .status-cell:last-child {
+            border-right: none;
+        }
+        
+        .status-value {
+            padding: 6px;
+            border-right: 1px solid #ddd;
+            border-bottom: 1px solid #ddd;
+            background: white;
+            font-size: 14px;
+            text-align: center;
             display: flex;
             align-items: center;
             justify-content: center;
         }
-        .status-table-cell {
-            padding: 8px;
-            border-right: 1px solid #ddd;
-            background: white;
-            font-size: 14px;
-            display: flex;
+        
+        .status-value:nth-child(2) {
+            text-align: left;
+            justify-content: flex-start;
             flex-direction: column;
-            justify-content: center;
+            align-items: flex-start;
         }
-        .status-table-header:last-child, .status-table-cell:last-child {
+        
+        .status-value:last-child {
             border-right: none;
-            
         }
-        .status-table-cell.yellow-bg {
+        
+        .status-value.status-summary {
+            font-weight: 600;
             background-color: #fff3cd;
-            font-weight: bold;
-            text-align: center;
         }
-        .status-table-cell .action-item {
-             margin: 2px 0;
-             font-size: 13px;
-        }
-        .status-table-cell .action-deadline {
-            font-size: 13px;
-            color: #666;
-            font-style: italic;
-        }
-        .text-center {
-            text-align: center;
-        }
-
+        
         .status-counts {
             text-align: left;
             line-height: 1.3;
-            padding-top: 4px;
         }
         
         .deal-killer-count { color: #dc3545; }
@@ -112,24 +105,30 @@
         .okay-count { color: #28a745; font-weight: bold; }
         
         .action-item {
-            margin: 4px 0;
-            font-size: 14px;
+            margin: 2px 0;
+            font-size: 13px;
         }
-
+        
+        .action-deadline {
+            font-size: 12px;
+            color: #666;
+            font-style: italic;
+        }
+        
         .summary-section {
             grid-column: 1 / -1;
             padding: 10px;
-            background: #ffffff;
+            background: #f8f9fa;
             border-bottom: 2px solid #ddd;
         }
         
         .summary-header {
-            font-weight: 800;
+            font-weight: 600;
             margin-bottom: 5px;
         }
         
         .summary-content {
-            font-size: 13px;
+            font-size: 14px;
             line-height: 1.4;
         }
         
@@ -152,8 +151,8 @@
             font-weight: 600;
             font-size: 16px;
             color: #2c3e50;
-            border-bottom: 1px solid #bbb;
-            border-top: 2px solid #bbb;
+            border-bottom: 1px solid #ddd;
+            border-top: 2px solid #ddd;
         }
         
         .section {
@@ -171,14 +170,14 @@
             cursor: pointer;
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-start;
             user-select: none;
         }
         
         .section-title {
             font-weight: 600;
             color: #2c3e50;
-            font-size: 13px;
+            font-size: 15px;
             display: flex;
             align-items: center;
             line-height: 1.4;
@@ -186,14 +185,9 @@
 
         .summary-text {
             font-weight: normal;
-            color: #343434;
-            font-size: 13px;
+            color: #666;
+            font-size: 14px;
             margin-left: 6px;
-        }
-        .upload-link {
-            color: #007bff;
-            text-decoration: underline;
-            cursor: pointer;
         }
         
         .status-icon {
@@ -201,77 +195,16 @@
             margin-right: 8px;
         }
         
-        .header-icons {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .caret-icon {
-            width: 16px;
-            height: 16px;
-            fill: #999;
+        .expand-icon {
+            color: #999;
+            font-size: 16px;
             transition: transform 0.3s ease;
-            margin-left: 10px;
+            margin-left: 20px;
             flex-shrink: 0;
         }
         
-        .section.expanded .caret-icon {
+        .section.expanded .expand-icon {
             transform: rotate(180deg);
-        }
-
-        /* Tooltip Styles */
-        .tooltip {
-            position: relative;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .tooltip-icon {
-            width: 16px;
-            height: 16px;
-            background-color: #ccc;
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            font-weight: bold;
-            cursor: help;
-        }
-        .tooltip .tooltip-text {
-            visibility: hidden;
-            width: 250px;
-            background-color: #2c3e50;
-            color: #fff;
-            text-align: center;
-            border-radius: 6px;
-            padding: 8px;
-            position: absolute;
-            z-index: 1;
-            bottom: 150%;
-            left: 50%;
-            margin-left: -125px;
-            opacity: 0;
-            transition: opacity 0.3s;
-            font-size: 13px;
-            font-weight: normal;
-            line-height: 1.4;
-        }
-        .tooltip .tooltip-text::after {
-            content: "";
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            margin-left: -5px;
-            border-width: 5px;
-            border-style: solid;
-            border-color: #2c3e50 transparent transparent transparent;
-        }
-        .tooltip:hover .tooltip-text {
-            visibility: visible;
-            opacity: 1;
         }
         
         .section-content {
@@ -294,7 +227,7 @@
             margin: 4px 0;
             padding-left: 0;
             position: relative;
-            font-size: 13px;
+            font-size: 14px;
             line-height: 1.4;
             color: #555;
         }
@@ -302,6 +235,7 @@
         .detail-item:before {
             display: none;
         }
+        
         .red-flag {
             color: #dc3545;
             font-weight: 600;
@@ -311,14 +245,11 @@
             color: #ffc107;
             font-weight: 600;
         }
-
         
         .legend {
             padding: 15px;
             background: #f8f9fa;
             border-top: 2px solid #dee2e6;
-            border-bottom-left-radius: 8px;
-            border-bottom-right-radius: 8px;
         }
         
         .legend-title {
@@ -340,36 +271,67 @@
         }
         
         @media (max-width: 768px) {
+            .status-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .status-cell:nth-child(2),
+            .status-value:nth-child(2) {
+                grid-column: span 2;
+            }
+            
             .section-header {
                 padding: 15px;
             }
+            
             .section-details {
                 padding-left: 35px;
+            }
+            
+            .legend-item {
+                display: block;
+                margin: 5px 0;
             }
         }
         
         @media print {
-            body { background: white; }
-            .container { box-shadow: none; }
-            .section { break-inside: avoid; }
-            .section.expanded .section-content { max-height: none !important; }
-            .caret-icon, .tooltip { display: none; }
+            body {
+                background: white;
+            }
+            
+            .container {
+                box-shadow: none;
+            }
+            
+            .section {
+                break-inside: avoid;
+            }
+            
+            .section.expanded .section-content {
+                max-height: none !important;
+            }
+            
+            .expand-icon {
+                display: none;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <span class="header-title">❏ TitleHero — 1499 Kiner Avenue, San Jose, CA</span>
+            <span class="header-title">❏ PRELIM DIGEST — 1499 Kiner Avenue, San Jose, CA</span>
             <span class="header-subtitle">(Escrow #1115041053-CT)</span>
         </div>
         
-        <div class="status-table">
-            <div class="status-table-cell yellow-bg">Status: <br>Conditionally Ready for Close</div>
-            <div class="status-table-header">Items Requiring Resolution</div>
-            <div class="status-table-header">Prepared On</div>
-
-            <div class="status-table-cell">
+        <div class="status-grid">
+            <div class="status-cell">STATUS</div>
+            <div class="status-cell">NEXT ACTION / DEADLINE</div>
+            <div class="status-cell">PREPARED ON</div>
+        </div>
+        
+        <div class="status-grid">
+            <div class="status-value status-summary">
                 <div class="status-counts">
                     <div class="deal-killer-count">🛑 0 deal killers</div>
                     <div class="needs-attention-count">⚠️ 14 need attention</div>
@@ -377,16 +339,16 @@
                     <div class="okay-count">✅ 4 okay</div>
                 </div>
             </div>
-            <div class="status-table-cell">
-                <div class="action-item">1. Settle tax bill prior to closing.</div>
-                <div class="action-item">2. Address Tesla lien prior to closing.</div>
-                <div class="action-item">3. Obtain Certificate of Trust prior to closing.</div>
+            <div class="status-value">
+                <div class="action-item">1. Settle tax bill. <span class="action-deadline">Prior to Closing.</span></div>
+                <div class="action-item">2. Address Tesla lien. <span class="action-deadline">Prior to Closing.</span></div>
+                <div class="action-item">3. Obtain Certificate of Trust. <span class="action-deadline">Prior to Closing.</span></div>
             </div>
-            <div class="status-table-cell text-center">02-Jul 2025</div>
+            <div class="status-value">02-Jul 2025</div>
         </div>
         
         <div class="summary-section">
-            <div class="summary-header">Summary:</div>
+            <div class="summary-header">SUMMARY:</div>
             <div class="summary-content">
                 Several <strong>non-standard impediments to the transaction closing</strong> were identified:
                 <ul>
@@ -404,10 +366,7 @@
             <div class="section" onclick="toggleSection(this)">
                 <div class="section-header">
                     <div class="section-title"><span class="status-icon">✅</span> Record Owner(s):<span class="summary-text">Peng Zheng and Minmin Hou, as co-Trustees of The Zheng and Hou Family Living Trust</span></div>
-                    <div class="header-icons">
-                        <div class="tooltip"><span class="tooltip-icon">?</span><span class="tooltip-text">Identifies the individual(s) or entity that legally owns the property according to public records.</span></div>
-                        <svg class="caret-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
-                    </div>
+                    <span class="expand-icon">▼</span>
                 </div>
                 <div class="section-content">
                     <div class="section-details">
@@ -419,10 +378,7 @@
             <div class="section" onclick="toggleSection(this)">
                 <div class="section-header">
                     <div class="section-title"><span class="status-icon">⚠️</span> Vesting Method:<span class="summary-text">The property is held in a family trust dated 8/29/2022</span></div>
-                     <div class="header-icons">
-                        <div class="tooltip"><span class="tooltip-icon">?</span><span class="tooltip-text">Describes how the owners legally hold the title (e.g., as joint tenants, tenants in common, or in a trust).</span></div>
-                        <svg class="caret-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
-                    </div>
+                    <span class="expand-icon">▼</span>
                 </div>
                 <div class="section-content">
                     <div class="section-details">
@@ -433,11 +389,8 @@
             
             <div class="section" onclick="toggleSection(this)">
                 <div class="section-header">
-                    <div class="section-title"><span class="status-icon">❓</span> Vesting Matches Contract?:<span class="summary-text">Contract Not Provided. <a href="#" onclick="event.stopPropagation()" class="upload-link">Upload here</a></span></div>
-                     <div class="header-icons">
-                        <div class="tooltip"><span class="tooltip-icon">?</span><span class="tooltip-text">Verifies if the name(s) of the seller on the purchase contract match the legal owners on the title report.</span></div>
-                        <svg class="caret-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
-                    </div>
+                    <div class="section-title"><span class="status-icon">❓</span> Vesting Matches Contract?:<span class="summary-text">Contract Not Provided</span></div>
+                    <span class="expand-icon">▼</span>
                 </div>
                 <div class="section-content">
                     <div class="section-details">
@@ -451,10 +404,7 @@
             <div class="section" onclick="toggleSection(this)">
                 <div class="section-header">
                     <div class="section-title"><span class="status-icon">✅</span> Full Legal Description:<span class="summary-text">Lot 49 of "Tract No. 2567 Willomont Unit No. 2", excepting underground water rights</span></div>
-                     <div class="header-icons">
-                        <div class="tooltip"><span class="tooltip-icon">?</span><span class="tooltip-text">The official description of the property as used in legal documents, distinct from the common street address.</span></div>
-                        <svg class="caret-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
-                    </div>
+                    <span class="expand-icon">▼</span>
                 </div>
                 <div class="section-content">
                     <div class="section-details">
@@ -466,11 +416,8 @@
             
             <div class="section" onclick="toggleSection(this)">
                 <div class="section-header">
-                    <div class="section-title"><span class="status-icon">❓</span> APN Matches Contract?:<span class="summary-text">Contract Not Provided. <a href="#" onclick="event.stopPropagation()" class="upload-link">Upload here</a></span></div>
-                     <div class="header-icons">
-                        <div class="tooltip"><span class="tooltip-icon">?</span><span class="tooltip-text">Verifies if the Assessor's Parcel Number (APN) on the title report matches the one on the purchase contract.</span></div>
-                        <svg class="caret-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
-                    </div>
+                    <div class="section-title"><span class="status-icon">❓</span> APN Matches Contract?:<span class="summary-text">Contract Not Provided</span></div>
+                    <span class="expand-icon">▼</span>
                 </div>
                 <div class="section-content">
                     <div class="section-details">
@@ -481,11 +428,8 @@
             
             <div class="section" onclick="toggleSection(this)">
                 <div class="section-header">
-                    <div class="section-title"><span class="status-icon">❓</span> Acreage / Boundary Discrepancy:<span class="summary-text">Not provided. <a href="#" onclick="event.stopPropagation()" class="upload-link">Upload here</a></span></div>
-                     <div class="header-icons">
-                        <div class="tooltip"><span class="tooltip-icon">?</span><span class="tooltip-text">Flags any potential issues with the property's size or boundary lines based on available documents or surveys.</span></div>
-                        <svg class="caret-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
-                    </div>
+                    <div class="section-title"><span class="status-icon">❓</span> Acreage / Boundary Discrepancy:<span class="summary-text">Not provided</span></div>
+                    <span class="expand-icon">▼</span>
                 </div>
                 <div class="section-content">
                     <div class="section-details">
@@ -499,10 +443,7 @@
             <div class="section" onclick="toggleSection(this)">
                 <div class="section-header">
                     <div class="section-title"><span class="status-icon">⚠️</span> Chain of Title Gaps > 24mo:<span class="summary-text">Yes. The last recorded transfer was just over 24 months ago</span></div>
-                     <div class="header-icons">
-                        <div class="tooltip"><span class="tooltip-icon">?</span><span class="tooltip-text">Reviews the sequence of historical transfers to identify any unusual gaps or red flags in the property's ownership history.</span></div>
-                        <svg class="caret-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
-                    </div>
+                    <span class="expand-icon">▼</span>
                 </div>
                 <div class="section-content">
                     <div class="section-details">
@@ -514,10 +455,7 @@
             <div class="section" onclick="toggleSection(this)">
                 <div class="section-header">
                     <div class="section-title"><span class="status-icon">⚠️</span> Unrecorded Deeds / Probate:<span class="summary-text">No probate issues noted, but trust Certification of Trust is required</span></div>
-                     <div class="header-icons">
-                        <div class="tooltip"><span class="tooltip-icon">?</span><span class="tooltip-text">Checks for evidence of transfers that haven't been officially recorded or for ownership issues arising from an owner's death.</span></div>
-                        <svg class="caret-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
-                    </div>
+                    <span class="expand-icon">▼</span>
                 </div>
                 <div class="section-content">
                     <div class="section-details">
@@ -529,10 +467,7 @@
             <div class="section" onclick="toggleSection(this)">
                 <div class="section-header">
                     <div class="section-title"><span class="status-icon">✅</span> Lis Pendens / Bankruptcy:<span class="summary-text">None noted in the provided documents</span></div>
-                     <div class="header-icons">
-                        <div class="tooltip"><span class="tooltip-icon">?</span><span class="tooltip-text">Indicates if there are any pending lawsuits, foreclosures, or bankruptcies affecting the property's title.</span></div>
-                        <svg class="caret-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
-                    </div>
+                    <span class="expand-icon">▼</span>
                 </div>
                 <div class="section-content">
                     <div class="section-details">
@@ -546,10 +481,7 @@
             <div class="section" onclick="toggleSection(this)">
                 <div class="section-header">
                     <div class="section-title"><span class="status-icon">⚠️</span> Open Mortgages/Deeds of Trust:<span class="summary-text">One open Deed of Trust was found</span></div>
-                     <div class="header-icons">
-                        <div class="tooltip"><span class="tooltip-icon">?</span><span class="tooltip-text">Lists any outstanding mortgages or loans secured against the property that must be paid off at closing.</span></div>
-                        <svg class="caret-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
-                    </div>
+                    <span class="expand-icon">▼</span>
                 </div>
                 <div class="section-content">
                     <div class="section-details">
@@ -561,10 +493,7 @@
             <div class="section" onclick="toggleSection(this)">
                 <div class="section-header">
                     <div class="section-title"><span class="status-icon">✅</span> Missing Reconveyances:<span class="summary-text">None noted in the provided documents</span></div>
-                     <div class="header-icons">
-                        <div class="tooltip"><span class="tooltip-icon">?</span><span class="tooltip-text">Checks if previous loans have been properly cleared from the title record after being paid off.</span></div>
-                        <svg class="caret-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
-                    </div>
+                    <span class="expand-icon">▼</span>
                 </div>
                 <div class="section-content">
                     <div class="section-details">
@@ -576,10 +505,7 @@
             <div class="section" onclick="toggleSection(this)">
                 <div class="section-header">
                     <div class="section-title"><span class="status-icon">⚠️</span> Involuntary Liens:<span class="summary-text">Two items are recorded: a CFD assessment and a UCC Financing Statement for a solar system</span></div>
-                     <div class="header-icons">
-                        <div class="tooltip"><span class="tooltip-icon">?</span><span class="tooltip-text">Identifies non-mortgage claims against the property, such as tax liens, judgments, or mechanic's liens.</span></div>
-                        <svg class="caret-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
-                    </div>
+                    <span class="expand-icon">▼</span>
                 </div>
                 <div class="section-content">
                     <div class="section-details">
@@ -592,10 +518,7 @@
             <div class="section" onclick="toggleSection(this)">
                 <div class="section-header">
                     <div class="section-title"><span class="status-icon">⚠️</span> Details for Open Lien(s):<span class="summary-text">A Deed of Trust for $1,300,500.00 was recorded on October 15, 2020</span></div>
-                     <div class="header-icons">
-                        <div class="tooltip"><span class="tooltip-icon">?</span><span class="tooltip-text">Provides specific information about any active loans or liens, including the lender, amount, and date.</span></div>
-                        <svg class="caret-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
-                    </div>
+                    <span class="expand-icon">▼</span>
                 </div>
                 <div class="section-content">
                     <div class="section-details">
@@ -609,10 +532,7 @@
             <div class="section" onclick="toggleSection(this)">
                 <div class="section-header">
                     <div class="section-title"><span class="status-icon">⚠️</span> Delinquent Property Taxes:<span class="summary-text">Yes. Both installments for the 2024-2025 fiscal year are due</span></div>
-                     <div class="header-icons">
-                        <div class="tooltip"><span class="tooltip-icon">?</span><span class="tooltip-text">Shows if there are any unpaid property taxes from previous years that must be settled.</span></div>
-                        <svg class="caret-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
-                    </div>
+                    <span class="expand-icon">▼</span>
                 </div>
                 <div class="section-content">
                     <div class="section-details">
@@ -624,10 +544,7 @@
             <div class="section" onclick="toggleSection(this)">
                 <div class="section-header">
                     <div class="section-title"><span class="status-icon">⚠️</span> Special Assessments:<span class="summary-text">The property is within a Community Facilities District for Clean Energy</span></div>
-                     <div class="header-icons">
-                        <div class="tooltip"><span class="tooltip-icon">?</span><span class="tooltip-text">Lists any extra taxes or fees levied by the city or county for specific local improvements (e.g., sewers, parks).</span></div>
-                        <svg class="caret-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
-                    </div>
+                    <span class="expand-icon">▼</span>
                 </div>
                 <div class="section-content">
                     <div class="section-details">
@@ -639,10 +556,7 @@
             <div class="section" onclick="toggleSection(this)">
                 <div class="section-header">
                     <div class="section-title"><span class="status-icon">⚠️</span> Next Tax Installment Due:<span class="summary-text">The 1st installment of $10,239.40 is due</span></div>
-                     <div class="header-icons">
-                        <div class="tooltip"><span class="tooltip-icon">?</span><span class="tooltip-text">Indicates the amount and due date for the next property tax payment.</span></div>
-                        <svg class="caret-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
-                    </div>
+                    <span class="expand-icon">▼</span>
                 </div>
                 <div class="section-content">
                     <div class="section-details">
@@ -656,10 +570,7 @@
             <div class="section" onclick="toggleSection(this)">
                 <div class="section-header">
                     <div class="section-title"><span class="status-icon">✅</span> Easements & Impact:<span class="summary-text">The title is subject to minor public service and wire clearance easements</span></div>
-                     <div class="header-icons">
-                        <div class="tooltip"><span class="tooltip-icon">?</span><span class="tooltip-text">Details any rights given to others to use a portion of the property (e.g., for utility lines) and their potential impact.</span></div>
-                        <svg class="caret-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
-                    </div>
+                    <span class="expand-icon">▼</span>
                 </div>
                 <div class="section-content">
                     <div class="section-details">
@@ -672,10 +583,7 @@
             <div class="section" onclick="toggleSection(this)">
                 <div class="section-header">
                     <div class="section-title"><span class="status-icon">⚠️</span> CC&Rs / Key Use Restrictions:<span class="summary-text">The property is subject to Covenants, Conditions, and Restrictions recorded in 1959</span></div>
-                     <div class="header-icons">
-                        <div class="tooltip"><span class="tooltip-icon">?</span><span class="tooltip-text">Outlines rules and regulations set by a homeowners association (HOA) or developer that govern property use.</span></div>
-                        <svg class="caret-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
-                    </div>
+                    <span class="expand-icon">▼</span>
                 </div>
                 <div class="section-content">
                     <div class="section-details">
@@ -687,10 +595,7 @@
             <div class="section" onclick="toggleSection(this)">
                 <div class="section-header">
                     <div class="section-title"><span class="status-icon">⚠️</span> Access or Boundary Issues:<span class="summary-text">A 25-foot building set-back line is noted from Kiner Avenue</span></div>
-                     <div class="header-icons">
-                        <div class="tooltip"><span class="tooltip-icon">?</span><span class="tooltip-text">Highlights potential problems with legal access to the property or disputes regarding the location of its boundaries.</span></div>
-                        <svg class="caret-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
-                    </div>
+                    <span class="expand-icon">▼</span>
                 </div>
                 <div class="section-content">
                     <div class="section-details">
@@ -702,10 +607,7 @@
             <div class="section" onclick="toggleSection(this)">
                 <div class="section-header">
                     <div class="section-title"><span class="status-icon">⚠️</span> Reserved or Severed Rights:<span class="summary-text">Yes. All underground water rights are severed from the title</span></div>
-                     <div class="header-icons">
-                        <div class="tooltip"><span class="tooltip-icon">?</span><span class="tooltip-text">Indicates if any property rights (like mineral, water, or air rights) have been sold or kept by a previous owner.</span></div>
-                        <svg class="caret-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
-                    </div>
+                    <span class="expand-icon">▼</span>
                 </div>
                 <div class="section-content">
                     <div class="section-details">
@@ -719,10 +621,7 @@
             <div class="section" onclick="toggleSection(this)">
                 <div class="section-header">
                     <div class="section-title"><span class="status-icon">⚠️</span> FinCEN Compliance:<span class="summary-text">This transaction may require federal compliance to avoid being stopped by the title company</span></div>
-                     <div class="header-icons">
-                        <div class="tooltip"><span class="tooltip-icon">?</span><span class="tooltip-text">Checks if the transaction is subject to federal anti-money laundering regulations requiring reporting to the government.</span></div>
-                        <svg class="caret-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
-                    </div>
+                    <span class="expand-icon">▼</span>
                 </div>
                 <div class="section-content">
                     <div class="section-details">
@@ -735,10 +634,7 @@
             <div class="section" onclick="toggleSection(this)">
                 <div class="section-header">
                     <div class="section-title"><span class="status-icon">⚠️</span> Standard vs Special Exceptions:<span class="summary-text">The report contains multiple special exceptions</span></div>
-                     <div class="header-icons">
-                        <div class="tooltip"><span class="tooltip-icon">?</span><span class="tooltip-text">Lists items the title insurance policy will not cover. Special exceptions are specific to the property, while standard ones are general.</span></div>
-                        <svg class="caret-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
-                    </div>
+                    <span class="expand-icon">▼</span>
                 </div>
                 <div class="section-content">
                     <div class="section-details">
@@ -773,9 +669,12 @@
         function toggleSection(section) {
             section.classList.toggle('expanded');
             
+            // Get the content div
             const content = section.querySelector('.section-content');
             
+            // Toggle max-height for smooth animation
             if (section.classList.contains('expanded')) {
+                // Calculate the actual height needed
                 const scrollHeight = content.scrollHeight;
                 content.style.maxHeight = scrollHeight + 'px';
             } else {
@@ -783,6 +682,7 @@
             }
         }
         
+        // Auto-expand all sections for printing
         window.addEventListener('beforeprint', () => {
             document.querySelectorAll('.section').forEach(section => {
                 section.classList.add('expanded');
